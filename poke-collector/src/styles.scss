@@ -1,0 +1,48 @@
+@use '@angular/material' as mat;
+@use '@angular/material-experimental' as matx;
+
+$theme: matx.define-theme((
+  color: (
+    theme-type: light,
+    primary: matx.$m3-azure-palette,
+  ),
+  typography: (
+    brand-family: 'Montserrat',
+    bold-weight: 900
+  ),
+  density: (
+    scale: -1
+  )
+));
+
+:root {
+  /* Custom */
+  --pc-motion-duration-stagger-delay: 16ms;
+  --pc-motion-duration-medium: 150ms;
+  --pc-motion-duration-short: 200ms;
+
+  --pc-motion-easing-decelerating: cubic-bezier(.05, .65, .98, .23);
+}
+
+
+html {
+  @include mat.all-component-themes($theme);
+  @include matx.color-variants-back-compat($theme);
+}
+
+html, body {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: Montserrat, "Helvetica Neue", sans-serif;
+  background: rgb(59, 61, 64);
+  background: linear-gradient(149deg, rgba(59, 61, 64, 1) 0%, rgba(252, 0, 84, 1) 100%);
+}
+
+.mat-typography h2 {
+  font: 500 32px / 42px Montserrat, sans-serif;
+  letter-spacing: .0125em;
+  margin: 0 0 16px;
+}

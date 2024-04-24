@@ -1,0 +1,14 @@
+@if (evolutionChain(); as chain) {
+  @for (pokemon of chain; track pokemon.id; let last = $last) {
+    <img alt="{{pokemon.name}}"
+         [class.current]="pokemon.id === id()"
+         [src]="'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/' + pokemon.id + '.png'">
+    @if (!last) {
+      <div class="arrow">
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+    }
+  }
+}

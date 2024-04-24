@@ -1,0 +1,28 @@
+<button class="pc-favorite" [class.selected]="isFavorite()" mat-icon-button (click)="toggleFavorite()">
+  @if (isFavorite()) {
+    <mat-icon style="color: rgb(252, 0, 84)">favorite</mat-icon>
+  } @else {
+    <mat-icon>favorite_border</mat-icon>
+  }
+</button>
+<img
+  class="pc-pokemon-image"
+  [src]="'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/' + pokemonId() + '.png'">
+
+@if (pokemonDetails(); as details) {
+  <div class="pc-details">
+    <span class="pc-title">#{{ pokemonId() }} {{ details.name }}</span>
+    <span class="pc-info">Height:  {{ pokemonHeight() }}</span>
+    <span
+      class="pc-info">Base experience: {{ details.pokemon_v2_pokemonspecy.pokemons[0].base_experience ?? 'unkown' }}</span>
+    <span class="pc-info">Color:  {{ details.pokemon_v2_pokemonspecy.color.name }}</span>
+
+  </div>
+  <app-pokemon-stats></app-pokemon-stats>
+  <app-evolution-chain></app-evolution-chain>
+  <div class="pc-description">
+    @for (text of details.pokemon_v2_pokemonspecy.flavortexts; track text.flavor_text) {
+      <span>{{ text.flavor_text }}</span>
+    }
+  </div>
+}

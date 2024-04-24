@@ -1,0 +1,15 @@
+:host {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.pc-stat {
+  display: grid;
+  grid-template-columns: 150px 1fr;
+  width: 100%;
+}
+
+app-pogress-bar {
+  grid-column: 2;
+}

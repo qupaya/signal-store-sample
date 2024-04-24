@@ -1,0 +1,8 @@
+@if (pokemonStats(); as stats) {
+    @for (stat of stats; track stat.id) {
+      <div class="pc-stat">
+        <span>{{ stat.name }}</span>
+        <app-pogress-bar [value]="stat.value" [maxValue]="stat.maxValue"></app-pogress-bar>
+      </div>
+    }
+}

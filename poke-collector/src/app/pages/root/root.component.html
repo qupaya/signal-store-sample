@@ -1,0 +1,15 @@
+<mat-card>
+  <mat-card-content>
+    <mat-card-title class="pc-title">
+      <span>Pokemon collection</span>
+      <button style="color: #fff" mat-icon-button (click)="toggleFavorites()">
+        @if (!showFavorites()) {
+          <mat-icon>collections_bookmark</mat-icon>
+        } @else {
+          <mat-icon>apps</mat-icon>
+        }
+      </button>
+    </mat-card-title>
+    <router-outlet></router-outlet>
+  </mat-card-content>
+</mat-card>

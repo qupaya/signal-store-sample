@@ -1,0 +1,87 @@
+:host {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+.pc-favorite {
+  --large-size-button: 5rem;
+  --large-size-icon: 3.5rem;
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+
+  width: var(--large-size-button);
+  height: var(--large-size-button);
+  line-height: var(--large-size-button);
+
+  &.selected {
+    .mat-icon {
+      color: rgb(252, 0, 84);
+    }
+  }
+
+  .mat-icon {
+    font-size: var(--large-size-icon);
+    width: var(--large-size-icon);
+    height: var(--large-size-icon);
+    line-height: var(--large-size-icon);
+  }
+
+  .mat-button-ripple {
+    font-size: inherit;
+    width: inherit;
+    height: inherit;
+    line-height: inherit;
+  }
+}
+
+.pc-pokemon-image {
+  view-transition-name: pokemon-image;
+}
+
+.pc-details {
+  grid-column: 2;
+  grid-row: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.pc-title {
+  font-size: 3rem;
+  font-family: Montserrat, "Helvetica Neue", sans-serif;
+  letter-spacing: 0.25rem;
+  line-height: 4.2rem;
+  view-transition-name: pokemon-title;
+}
+
+.pc-info {
+  font-size: 2rem;
+  font-family: Montserrat, "Helvetica Neue", sans-serif;
+  letter-spacing: 0.25rem;
+  line-height: 3.2rem;
+}
+
+app-pokemon-stats {
+  grid-column: 2;
+  grid-row: 2;
+}
+
+app-evolution-chain {
+  grid-column: 1;
+  grid-row: 2;
+}
+
+.pc-description {
+  grid-column: 1 / span 2;
+  grid-row: 3;
+  margin: 1rem 0;
+  font-size: 1rem;
+  font-family: Montserrat, "Helvetica Neue", sans-serif;
+  letter-spacing: 0.125rem;
+  line-height: 1.2rem;
+}
+
+

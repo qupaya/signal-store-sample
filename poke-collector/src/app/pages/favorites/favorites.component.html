@@ -1,0 +1,5 @@
+@for (poke of favorites(); track poke.name) {
+  <app-pokemon-card [pokemon]="poke" @favorite></app-pokemon-card>
+} @empty {
+  <p>You have no favorites in your list!</p>
+}

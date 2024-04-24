@@ -1,0 +1,24 @@
+@if (pokemon(); as pokemon) {
+  <mat-card [class.selected]="selected()" [class.favorite]="isFavorite()">
+    <mat-card-header>
+      <mat-card-title-group>
+        <mat-card-title class="pc-title">#{{ pokemon.pokemon_species_id }} {{ pokemon.name }}</mat-card-title>
+        <!--TODO: move img url -->
+        <img mat-card-sm-image
+             [src]="'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/' + pokemon.pokemon_species_id + '.png'">
+      </mat-card-title-group>
+    </mat-card-header>
+    <mat-card-content style="position: relative">
+      <button class="pc-favorite" [class.selected]="isFavorite()"
+              style="position: absolute; bottom: 0.5rem; left: 0.5rem"
+              mat-icon-button
+              (click)="toggleFavorite(pokemon, $event)">
+        @if (isFavorite()) {
+          <mat-icon>favorite</mat-icon>
+        } @else {
+          <mat-icon>favorite_border</mat-icon>
+        }
+      </button>
+    </mat-card-content>
+  </mat-card>
+}

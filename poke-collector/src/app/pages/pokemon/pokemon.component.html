@@ -1,0 +1,12 @@
+@if (!loading()) {
+  <div class="pc-container">
+    @for (poke of pokemon(); track poke.name) {
+      <app-pokemon-card [pokemon]="poke" [selected]="selectedPokemonId() === poke.pokemon_species_id"
+                        (click)="openPokemon(poke.pokemon_species_id)"></app-pokemon-card>
+    } @empty {
+      <p>No pokemons found!</p>
+    }
+  </div>
+} @else {
+  <img class="spinner" alt="pokeball" src="assets/pokeball.png"/>
+}
