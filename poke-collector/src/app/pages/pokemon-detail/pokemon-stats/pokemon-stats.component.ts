@@ -1,6 +1,6 @@
-import {Component, computed, inject} from '@angular/core';
+import {Component, computed, input} from '@angular/core';
 import {PogressBarComponent} from "../../../components/pogress-bar/pogress-bar.component";
-import {pokeCollectorStore} from "../../../app.store";
+import {Pokemon} from "../../../models/pokemon";
 
 @Component({
   selector: 'app-pokemon-stats',
@@ -12,8 +12,7 @@ import {pokeCollectorStore} from "../../../app.store";
   styleUrl: './pokemon-stats.component.scss'
 })
 export class PokemonStatsComponent {
-  private readonly store = inject(pokeCollectorStore);
-  readonly pokemonDetails = this.store.selectedPokemonDetails;
+  readonly pokemonDetails = input.required<Pokemon>();
 
   readonly pokemonStats = computed(() => {
     const stats = this.pokemonDetails()?.pokemon_v2_pokemonspecy?.pokemons[0]?.pokemonStats;

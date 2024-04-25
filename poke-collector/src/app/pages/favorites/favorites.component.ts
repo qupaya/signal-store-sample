@@ -1,5 +1,4 @@
-import {Component, inject} from '@angular/core';
-import {pokeCollectorStore} from "../../app.store";
+import {Component, signal} from '@angular/core';
 import {Pokemon} from "../../models/pokemon";
 import {
   MatCard,
@@ -38,10 +37,9 @@ import {PokemonCardComponent} from "../../components/pokemon-card/pokemon-card.c
   ]
 })
 export class FavoritesComponent {
-  private readonly store = inject(pokeCollectorStore);
-  readonly favorites = this.store.favoritesEntities;
+  readonly favorites = signal<Pokemon[]>([]);
 
   removeFavorite({pokemon_species_id}: Pokemon): void {
-    this.store.removeFavorite(pokemon_species_id);
+    // TODO: to be implement
   }
 }

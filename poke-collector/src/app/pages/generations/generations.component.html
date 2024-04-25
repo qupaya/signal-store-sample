@@ -1,17 +1,13 @@
-@if (!loading()) {
-  @for (gen of generations(); track gen.id) {
-    <mat-card class="example-card" [appearance]="'raised'" (click)="openPokemonCollection(gen.id)">
-      <mat-card-header>
-        #{{gen.id}} - {{gen.generationNames[0].name}}
-      </mat-card-header>
-      <mat-card-content>
-        {{gen.pokemonCount.aggregate.count}} pokemon species
-      </mat-card-content>
-    </mat-card>
+@for (gen of generations$ | async; track gen.id) {
+  <mat-card class="example-card" [appearance]="'raised'" (click)="openPokemonCollection(gen.id)">
+    <mat-card-header>
+      #{{ gen.id }} - {{ gen.generationNames[0].name }}
+    </mat-card-header>
+    <mat-card-content>
+      {{ gen.pokemonCount.aggregate.count }} pokemon species
+    </mat-card-content>
+  </mat-card>
 
-  } @empty {
-    <p>No generations found!</p>
-  }
-} @else {
-  <p>Loading...</p>
+} @empty {
+  <p>No generations found!</p>
 }

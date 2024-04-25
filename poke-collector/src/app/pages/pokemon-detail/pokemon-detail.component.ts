@@ -1,11 +1,15 @@
-import {Component, computed, effect, inject, input, numberAttribute} from '@angular/core';
-import {pokeCollectorStore} from "../../app.store";
+import {Component, computed, inject, input, numberAttribute, signal} from '@angular/core';
 import {MatProgressBar} from "@angular/material/progress-bar";
 import {PogressBarComponent} from "../../components/pogress-bar/pogress-bar.component";
 import {EvolutionChainComponent} from "./evolution-chain/evolution-chain.component";
 import {PokemonStatsComponent} from "./pokemon-stats/pokemon-stats.component";
 import {MatIconButton} from "@angular/material/button";
 import {MatIcon} from "@angular/material/icon";
+import {Pokemon} from "../../models/pokemon";
+import {toObservable} from "@angular/core/rxjs-interop";
+import {ApiService} from "../../services/api.service";
+import {switchMap, tap} from "rxjs";
+import {AsyncPipe} from "@angular/common";
 
 @Component({
   selector: 'app-pokemon-detail',
@@ -16,15 +20,22 @@ import {MatIcon} from "@angular/material/icon";
     EvolutionChainComponent,
     PokemonStatsComponent,
     MatIconButton,
-    MatIcon
+    MatIcon,
+    AsyncPipe
   ],
   templateUrl: './pokemon-detail.component.html',
   styleUrl: './pokemon-detail.component.scss'
 })
 export class PokemonDetailComponent {
-  private readonly store = inject(pokeCollectorStore);
+  private readonly apiService = inject(ApiService);
   pokemonId = input.required<number, unknown>({transform: numberAttribute});
-  readonly pokemonDetails = this.store.selectedPokemonDetails;
+  private readonly pokemonId$ = toObservable(this.pokemonId);
+  private readonly pokemonDetails = signal<Pokemon | undefined>(undefined);
+
+  readonly pokemon$ = this.pokemonId$.pipe(
+    switchMap(id => this.apiService.loadPokemonDetails(id)),
+    tap((pokemon) => this.pokemonDetails.set(pokemon)),
+  )
 
   readonly pokemonHeight = computed(() => {
     const species = this.pokemonDetails()?.pokemon_v2_pokemonspecy?.pokemons;
@@ -37,31 +48,15 @@ export class PokemonDetailComponent {
   });
 
   readonly isFavorite = computed(() => {
-    if (this.store.favoritesEntities().length) {
-      return !!this.store.favoritesEntities().find(({pokemon_species_id}) => pokemon_species_id === this.pokemonId());
-    }
+    //TODO: to be implement
     return false;
   })
-
-  loadData = effect(() => {
-    const id = this.pokemonId();
-    if (id && !this.pokemonDetails()) {
-      this.store.loadPokemonDetails(id);
-    }
-  }, {allowSignalWrites: true});
 
   toggleFavorite(): void {
     const details = this.pokemonDetails();
     if (!details) {
       return;
     }
-
-
-    if (this.isFavorite()) {
-      this.store.removeFavorite(details.pokemon_species_id);
-    } else {
-      console.log('addFavorite', details);
-      this.store.addFavorite(details);
-    }
+    //TODO: to be implement
   }
 }

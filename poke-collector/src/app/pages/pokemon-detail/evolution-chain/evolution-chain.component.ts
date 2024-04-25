@@ -1,5 +1,4 @@
-import {Component, inject} from '@angular/core';
-import {pokeCollectorStore} from "../../../app.store";
+import {Component, input, signal} from '@angular/core';
 
 @Component({
   selector: 'app-evolution-chain',
@@ -9,7 +8,6 @@ import {pokeCollectorStore} from "../../../app.store";
   styleUrl: './evolution-chain.component.scss'
 })
 export class EvolutionChainComponent {
-  private readonly store = inject(pokeCollectorStore);
-  readonly evolutionChain = this.store.selectedPokemonEvolutionChain;
-  readonly id = this.store.selectedPokemonId;
+  readonly evolutionChain = signal<{ id: number, name: string }[]>([]);
+  readonly id = input.required<number>();
 }

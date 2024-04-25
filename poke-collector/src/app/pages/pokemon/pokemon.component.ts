@@ -1,5 +1,4 @@
-import {Component, effect, inject, input} from '@angular/core';
-import {pokeCollectorStore} from "../../app.store";
+import {Component, inject, input, signal} from '@angular/core';
 import {
   MatCard,
   MatCardContent,
@@ -14,6 +13,10 @@ import {ActivatedRoute, Router} from "@angular/router";
 import {MatIcon} from "@angular/material/icon";
 import {MatIconButton} from "@angular/material/button";
 import {PokemonCardComponent} from "../../components/pokemon-card/pokemon-card.component";
+import {toObservable} from "@angular/core/rxjs-interop";
+import {map, switchMap, tap} from "rxjs";
+import {ApiService} from "../../services/api.service";
+import {AsyncPipe} from "@angular/common";
 
 @Component({
   selector: 'app-pokemon',
@@ -27,7 +30,8 @@ import {PokemonCardComponent} from "../../components/pokemon-card/pokemon-card.c
     MatCardContent,
     MatIcon,
     MatIconButton,
-    PokemonCardComponent
+    PokemonCardComponent,
+    AsyncPipe
   ],
   templateUrl: './pokemon.component.html',
   styleUrl: './pokemon.component.scss',
@@ -38,20 +42,29 @@ import {PokemonCardComponent} from "../../components/pokemon-card/pokemon-card.c
 export class PokemonComponent {
   private readonly router = inject(Router);
   private readonly activatedRoute = inject(ActivatedRoute);
-  private readonly store = inject(pokeCollectorStore);
+  private readonly apiService = inject(ApiService);
 
   id = input.required<number>();
-  readonly loading = this.store.loading;
-  readonly pokemon = this.store.pokemonCollectionEntities;
-  readonly favorites = this.store.favoritesEntities;
-  readonly selectedPokemonId = this.store.selectedPokemonId;
 
-  loadPokemon = effect(() => {
-    this.store.loadPokeCollection(this.id());
-  }, {allowSignalWrites: true});
+  private readonly id$ = toObservable(this.id);
+  readonly loading = signal(false);
+  readonly selectedPokemonId = signal<number>(-1);
+  readonly pokemon$ = this.id$.pipe(
+    tap(() => this.loading.set(true)),
+    switchMap(id => {
+      console.log('Try to call pokemon collection with id:', id);
+      this.selectedPokemonId.set(id);
+      return this.apiService.loadPokemonCollection(id);
+    }),
+    map(({data}) => data.items),
+    tap(() => {
+      this.loading.set(false);
+    })
+  );
+
 
   async openPokemon(pokemonId: number): Promise<void> {
-    this.store.selectPokemon(pokemonId);
+    this.selectedPokemonId.set(pokemonId);
     await this.router.navigate(['pokemon', pokemonId], {relativeTo: this.activatedRoute});
   }
 }

@@ -1,12 +1,13 @@
-@if (!loading()) {
-  <div class="pc-container">
-    @for (poke of pokemon(); track poke.name) {
-      <app-pokemon-card [pokemon]="poke" [selected]="selectedPokemonId() === poke.pokemon_species_id"
-                        (click)="openPokemon(poke.pokemon_species_id)"></app-pokemon-card>
-    } @empty {
-      <p>No pokemons found!</p>
-    }
-  </div>
-} @else {
+@if (loading()) {
   <img class="spinner" alt="pokeball" src="assets/pokeball.png"/>
 }
+<div class="pc-container">
+  @for (poke of pokemon$ | async; track poke.name) {
+    <app-pokemon-card [pokemon]="poke" [selected]="selectedPokemonId() === poke.pokemon_species_id"
+                      (click)="openPokemon(poke.pokemon_species_id)"></app-pokemon-card>
+  } @empty {
+    @if (!loading()) {
+      <p>No pokemons found!</p>
+    }
+  }
+</div>
