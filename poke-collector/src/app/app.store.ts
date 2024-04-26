@@ -1,4 +1,3 @@
-import {Generation} from "./models/generation";
 import {patchState, signalStore, type, withComputed, withHooks, withMethods, withState} from "@ngrx/signals";
 import {computed, inject} from "@angular/core";
 import {ApiService} from "./services/api.service";
@@ -6,6 +5,7 @@ import {rxMethod} from "@ngrx/signals/rxjs-interop";
 import {map, pipe, switchMap, tap} from "rxjs";
 import {Pokemon} from "./models/pokemon";
 import {addEntity, removeEntity, setEntities, withEntities} from "@ngrx/signals/entities";
+import {withGenerations} from "./pages/generations/generations.state";
 
 type PokemonCollectorState = {
   loading: boolean;
@@ -22,7 +22,7 @@ export const pokemonCollectorStore = signalStore(
     providedIn: 'root'
   },
   withState(initialState),
-  withEntities({entity: type<Generation>(), collection: 'generations'}),
+  withGenerations(),
   withEntities({entity: type<Pokemon>(), collection: 'pokemon'}),
   withEntities({entity: type<Pokemon>(), collection: 'favorites'}),
   withComputed((state) => ({
@@ -38,14 +38,6 @@ export const pokemonCollectorStore = signalStore(
     }),
   })),
   withMethods((store, apiService = inject(ApiService)) => ({
-    loadGenerations: rxMethod<void>(
-      pipe(
-        tap(() => patchState(store, {loading: true})),
-        switchMap(() => apiService.generations()),
-        map(({data}) => data.items),
-        tap(generations => patchState(store, {loading: false}, setEntities(generations, {collection: 'generations'}))),
-      )
-    ),
     loadPokemon: rxMethod<number>(
       pipe(
         tap(() => patchState(store, {loading: true})),
@@ -63,7 +55,6 @@ export const pokemonCollectorStore = signalStore(
     removeFavorite: (pokemonId: number) => patchState(store, removeEntity(pokemonId, {collection: 'favorites'})),
   })),
   withHooks((store) => ({
-    onInit: () => store.loadGenerations(),
     onDestroy: () => console.log('destroyed')
   }))
 )
