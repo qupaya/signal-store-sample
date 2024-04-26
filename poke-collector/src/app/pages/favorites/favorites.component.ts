@@ -1,4 +1,4 @@
-import {Component, signal} from '@angular/core';
+import {Component, inject} from '@angular/core';
 import {Pokemon} from "../../models/pokemon";
 import {
   MatCard,
@@ -14,6 +14,7 @@ import {MatIcon} from "@angular/material/icon";
 import {transition, trigger} from "@angular/animations";
 import {slideDeleteAnimation} from "../../animations/slide.animations";
 import {PokemonCardComponent} from "../../components/pokemon-card/pokemon-card.component";
+import {pokemonCollectorStore} from "../../app.store";
 
 @Component({
   selector: 'app-favorites',
@@ -37,9 +38,10 @@ import {PokemonCardComponent} from "../../components/pokemon-card/pokemon-card.c
   ]
 })
 export class FavoritesComponent {
-  readonly favorites = signal<Pokemon[]>([]);
+  private readonly store = inject(pokemonCollectorStore);
+  readonly favorites = this.store.favoritesEntities;
 
   removeFavorite({pokemon_species_id}: Pokemon): void {
-    // TODO: to be implement
+    this.store.removeFavorite(pokemon_species_id);
   }
 }

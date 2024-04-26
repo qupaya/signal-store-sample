@@ -39,16 +39,17 @@ export class PokemonDetailComponent {
     return 'Unknown';
   });
 
-  readonly isFavorite = computed(() => {
-    //TODO: to be implement
-    return false;
-  })
+  readonly isFavorite = computed(() => !!this.store.favoritesEntities().find(pokemon => this.pokemon?.()?.pokemon_species_id === pokemon.pokemon_species_id));
 
   toggleFavorite(): void {
     const details = this.pokemon?.();
     if (!details) {
       return;
     }
-    //TODO: to be implement
+    if (this.isFavorite()) {
+      this.store.removeFavorite(details.pokemon_species_id);
+    } else {
+      this.store.addFavorite(details);
+    }
   }
 }

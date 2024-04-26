@@ -5,7 +5,7 @@ import {ApiService} from "./services/api.service";
 import {rxMethod} from "@ngrx/signals/rxjs-interop";
 import {map, pipe, switchMap, tap} from "rxjs";
 import {Pokemon} from "./models/pokemon";
-import {setEntities, withEntities} from "@ngrx/signals/entities";
+import {addEntity, removeEntity, setEntities, withEntities} from "@ngrx/signals/entities";
 
 type PokemonCollectorState = {
   loading: boolean;
@@ -55,7 +55,12 @@ export const pokemonCollectorStore = signalStore(
           setEntities(pokemon, {collection: 'pokemon', idKey: 'pokemon_species_id'})))
       )
     ),
-    selectPokemon: (pokemon: Pokemon) => patchState(store, {selectedPokemon: pokemon})
+    selectPokemon: (pokemon: Pokemon) => patchState(store, {selectedPokemon: pokemon}),
+    addFavorite: (pokemon: Pokemon) => patchState(store, addEntity(pokemon, {
+      collection: 'favorites',
+      idKey: 'pokemon_species_id'
+    })),
+    removeFavorite: (pokemonId: number) => patchState(store, removeEntity(pokemonId, {collection: 'favorites'})),
   })),
   withHooks((store) => ({
     onInit: () => store.loadGenerations(),
