@@ -21,7 +21,7 @@ export class GenerationsComponent {
   private readonly store = inject(pokemonCollectorStore);
   private readonly router = inject(Router);
 
-  readonly generations = this.store.generations;
+  readonly generations = this.store.generationsEntities;
   readonly loading = this.store.loading;
 
   async openPokemonCollection(generationId: number): Promise<void> {

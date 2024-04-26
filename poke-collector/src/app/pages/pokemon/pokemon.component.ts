@@ -47,7 +47,7 @@ export class PokemonComponent {
 
   readonly loading = this.store.loading;
   readonly selectedPokemonId = this.store.selectedPokemon?.()?.pokemon_species_id;
-  readonly pokemon = this.store.pokemon;
+  readonly pokemon = this.store.pokemonEntities;
 
   private readonly loadPokemon = effect(() => this.store.loadPokemon(this.id()),
     {allowSignalWrites: true});
