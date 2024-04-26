@@ -1,9 +1,8 @@
 import {Component, inject} from '@angular/core';
 import {Router} from "@angular/router";
 import {MatCard, MatCardContent, MatCardHeader, MatCardTitleGroup} from "@angular/material/card";
-import {ApiService} from "../../services/api.service";
 import {AsyncPipe} from "@angular/common";
-import {map} from "rxjs";
+import {pokemonCollectorStore} from "../../app.store";
 
 @Component({
   selector: 'app-generations',
@@ -19,12 +18,11 @@ import {map} from "rxjs";
   styleUrl: './generations.component.scss'
 })
 export class GenerationsComponent {
-  private readonly apiService = inject(ApiService);
+  private readonly store = inject(pokemonCollectorStore);
   private readonly router = inject(Router);
 
-  readonly generations$ = this.apiService.generations().pipe(
-    map(({data}) => data.items)
-  );
+  readonly generations = this.store.generations;
+  readonly loading = this.store.loading;
 
   async openPokemonCollection(generationId: number): Promise<void> {
     await this.router.navigate(['/generation', generationId]);
