@@ -9,7 +9,7 @@
   class="pc-pokemon-image"
   [src]="'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/' + pokemonId() + '.png'">
 
-@if (pokemon$ | async; as details) {
+@if (pokemon?.(); as details) {
   <div class="pc-details">
     <span class="pc-title">#{{ pokemonId() }} {{ details.name }}</span>
     <span class="pc-info">Height:  {{ pokemonHeight() }}</span>
@@ -19,7 +19,7 @@
 
   </div>
   <app-pokemon-stats [pokemonDetails]="details"></app-pokemon-stats>
-  <app-evolution-chain [id]="pokemonId()"></app-evolution-chain>
+  <app-evolution-chain [id]="pokemonId()" [evolutionChain]="chain()"></app-evolution-chain>
   <div class="pc-description">
     @for (text of details.pokemon_v2_pokemonspecy.flavortexts; track text.flavor_text) {
       <span>{{ text.flavor_text }}</span>

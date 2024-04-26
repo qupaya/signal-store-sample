@@ -1,4 +1,4 @@
-import {Component, input, signal} from '@angular/core';
+import {Component, input} from '@angular/core';
 
 @Component({
   selector: 'app-evolution-chain',
@@ -8,6 +8,6 @@ import {Component, input, signal} from '@angular/core';
   styleUrl: './evolution-chain.component.scss'
 })
 export class EvolutionChainComponent {
-  readonly evolutionChain = signal<{ id: number, name: string }[]>([]);
+  readonly evolutionChain = input<{ id: number, name: string }[]>([]);
   readonly id = input.required<number>();
 }

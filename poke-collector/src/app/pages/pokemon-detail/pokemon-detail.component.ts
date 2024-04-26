@@ -1,15 +1,12 @@
-import {Component, computed, inject, input, numberAttribute, signal} from '@angular/core';
+import {Component, computed, inject, input, numberAttribute} from '@angular/core';
 import {MatProgressBar} from "@angular/material/progress-bar";
 import {PogressBarComponent} from "../../components/pogress-bar/pogress-bar.component";
 import {EvolutionChainComponent} from "./evolution-chain/evolution-chain.component";
 import {PokemonStatsComponent} from "./pokemon-stats/pokemon-stats.component";
 import {MatIconButton} from "@angular/material/button";
 import {MatIcon} from "@angular/material/icon";
-import {Pokemon} from "../../models/pokemon";
-import {toObservable} from "@angular/core/rxjs-interop";
-import {ApiService} from "../../services/api.service";
-import {switchMap, tap} from "rxjs";
 import {AsyncPipe} from "@angular/common";
+import {pokemonCollectorStore} from "../../app.store";
 
 @Component({
   selector: 'app-pokemon-detail',
@@ -27,18 +24,13 @@ import {AsyncPipe} from "@angular/common";
   styleUrl: './pokemon-detail.component.scss'
 })
 export class PokemonDetailComponent {
-  private readonly apiService = inject(ApiService);
+  private readonly store = inject(pokemonCollectorStore);
   pokemonId = input.required<number, unknown>({transform: numberAttribute});
-  private readonly pokemonId$ = toObservable(this.pokemonId);
-  private readonly pokemonDetails = signal<Pokemon | undefined>(undefined);
 
-  readonly pokemon$ = this.pokemonId$.pipe(
-    switchMap(id => this.apiService.loadPokemonDetails(id)),
-    tap((pokemon) => this.pokemonDetails.set(pokemon)),
-  )
-
+  readonly pokemon = this.store.selectedPokemon;
+  readonly chain = this.store.evolutionChain;
   readonly pokemonHeight = computed(() => {
-    const species = this.pokemonDetails()?.pokemon_v2_pokemonspecy?.pokemons;
+    const species = this.pokemon?.()?.pokemon_v2_pokemonspecy?.pokemons;
     if (species) {
       const height = species[0].height;
       const meter = height ? height / 10 : -1;
@@ -53,7 +45,7 @@ export class PokemonDetailComponent {
   })
 
   toggleFavorite(): void {
-    const details = this.pokemonDetails();
+    const details = this.pokemon?.();
     if (!details) {
       return;
     }

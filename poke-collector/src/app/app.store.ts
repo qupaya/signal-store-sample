@@ -1,6 +1,6 @@
 import {Generation} from "./models/generation";
-import {patchState, signalStore, type, withHooks, withMethods, withState} from "@ngrx/signals";
-import {inject} from "@angular/core";
+import {patchState, signalStore, type, withComputed, withHooks, withMethods, withState} from "@ngrx/signals";
+import {computed, inject} from "@angular/core";
 import {ApiService} from "./services/api.service";
 import {rxMethod} from "@ngrx/signals/rxjs-interop";
 import {map, pipe, switchMap, tap} from "rxjs";
@@ -25,6 +25,18 @@ export const pokemonCollectorStore = signalStore(
   withEntities({entity: type<Generation>(), collection: 'generations'}),
   withEntities({entity: type<Pokemon>(), collection: 'pokemon'}),
   withEntities({entity: type<Pokemon>(), collection: 'favorites'}),
+  withComputed((state) => ({
+    evolutionChain: computed(() => {
+      const selectedPokemon = state.selectedPokemon?.();
+      if (!selectedPokemon) {
+        return [];
+      }
+      return selectedPokemon.pokemon_v2_pokemonspecy?.evolutionchain?.pokemonspecies.map(pokemon => ({
+        id: pokemon.id,
+        name: pokemon.names[0].name ?? 'unknown',
+      })) || [];
+    }),
+  })),
   withMethods((store, apiService = inject(ApiService)) => ({
     loadGenerations: rxMethod<void>(
       pipe(
