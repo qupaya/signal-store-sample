@@ -1,4 +1,4 @@
-import {Component, inject, input, signal} from '@angular/core';
+import {Component, effect, inject, input} from '@angular/core';
 import {
   MatCard,
   MatCardContent,
@@ -13,10 +13,9 @@ import {ActivatedRoute, Router} from "@angular/router";
 import {MatIcon} from "@angular/material/icon";
 import {MatIconButton} from "@angular/material/button";
 import {PokemonCardComponent} from "../../components/pokemon-card/pokemon-card.component";
-import {toObservable} from "@angular/core/rxjs-interop";
-import {map, switchMap, tap} from "rxjs";
-import {ApiService} from "../../services/api.service";
 import {AsyncPipe} from "@angular/common";
+import {pokemonCollectorStore} from "../../app.store";
+import {Pokemon} from "../../models/pokemon";
 
 @Component({
   selector: 'app-pokemon',
@@ -42,29 +41,19 @@ import {AsyncPipe} from "@angular/common";
 export class PokemonComponent {
   private readonly router = inject(Router);
   private readonly activatedRoute = inject(ActivatedRoute);
-  private readonly apiService = inject(ApiService);
+  private readonly store = inject(pokemonCollectorStore);
 
   id = input.required<number>();
 
-  private readonly id$ = toObservable(this.id);
-  readonly loading = signal(false);
-  readonly selectedPokemonId = signal<number>(-1);
-  readonly pokemon$ = this.id$.pipe(
-    tap(() => this.loading.set(true)),
-    switchMap(id => {
-      console.log('Try to call pokemon collection with id:', id);
-      this.selectedPokemonId.set(id);
-      return this.apiService.loadPokemonCollection(id);
-    }),
-    map(({data}) => data.items),
-    tap(() => {
-      this.loading.set(false);
-    })
-  );
+  readonly loading = this.store.loading;
+  readonly selectedPokemonId = this.store.selectedPokemon?.()?.pokemon_species_id;
+  readonly pokemon = this.store.pokemon;
 
+  private readonly loadPokemon = effect(() => this.store.loadPokemon(this.id()),
+    {allowSignalWrites: true});
 
-  async openPokemon(pokemonId: number): Promise<void> {
-    this.selectedPokemonId.set(pokemonId);
-    await this.router.navigate(['pokemon', pokemonId], {relativeTo: this.activatedRoute});
+  async openPokemon(pokemon: Pokemon): Promise<void> {
+    this.store.selectPokemon(pokemon)
+    await this.router.navigate(['pokemon', pokemon.pokemon_species_id], {relativeTo: this.activatedRoute});
   }
 }
